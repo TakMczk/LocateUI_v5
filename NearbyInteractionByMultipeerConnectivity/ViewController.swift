@@ -10,6 +10,8 @@ import MultipeerConnectivity
 import NearbyInteraction
 
 var r_for_ui: Double = 100
+var offsetX: Double = 0
+var offsetY: Double = 0
 //ちゃんとこの値が半径に反映されている
 
 class ViewController: UIViewController {
@@ -129,6 +131,11 @@ extension ViewController: NISessionDelegate {
             let doubleDistance = Double(distanceLabel.text!)
             r_for_ui = doubleDistance!
             
+            if r_for_ui > 1{
+                r_for_ui = 1
+            }
+            
+            
 //            r_UI_Label.text = r_for_ui.description
 //            r_for_uiに、距離のデータを代入
             drawView?.setNeedsDisplay()
@@ -145,6 +152,12 @@ extension ViewController: NISessionDelegate {
             directionXLabel.text = direction.x.description
             directionYLabel.text = direction.y.description
             directionZLabel.text = direction.z.description
+            
+            //オフセットの処理
+            let DoffsetX = Double(directionXLabel.text!)
+            let DoffsetY = Double(directionYLabel.text!)
+            offsetX = DoffsetX!
+            offsetY = DoffsetY!
             
             stringData += direction.x.description + ","
             stringData += direction.y.description + ","
@@ -185,7 +198,7 @@ extension ViewController: NISessionDelegate {
 //            rectangle.stroke()
             
             // 円
-            let circle = UIBezierPath(arcCenter: CGPoint(x: 200, y: frame.size.height / 2), radius: r_for_ui*100, startAngle: 0, endAngle: CGFloat(Double.pi)*2, clockwise: true)
+            let circle = UIBezierPath(arcCenter: CGPoint(x: 200 + offsetX*200, y: 400 - offsetY*200), radius: 100 - r_for_ui*100, startAngle: 0, endAngle: CGFloat(Double.pi)*2, clockwise: true)
             // 内側の色
             UIColor(red: 0, green: 0, blue: 1, alpha: 0.3).setFill()
             // 内側を塗りつぶす
@@ -196,6 +209,7 @@ extension ViewController: NISessionDelegate {
             circle.lineWidth = 2.0
             // 線を塗りつぶす
             circle.stroke()
+            
             
         }
 
