@@ -12,6 +12,8 @@ import NearbyInteraction
 var r_for_ui: Double = 100
 var offsetX: Double = 0
 var offsetY: Double = 0
+
+var istap:Int = 0
 //ちゃんとこの値が半径に反映されている
 
 class ViewController: UIViewController {
@@ -60,14 +62,27 @@ class ViewController: UIViewController {
         let drawView = DrawView(frame: CGRect(x: 0, y: 0, width: view.frame.size.width
                                               , height: view.frame.size.height))
         //これがSubViewの大きさ
+        
+        
         self.drawView = drawView // 作ったViewは、ViewControllerが持っておく
         // NOTE(mactkg): ここでViewController.viewにdrawViewが渡っているので、もう追加はいらない
         // NOTE(mactkg): もしsubViewから取り除きたいときは、`self.drawView?.removeFromSuperview()` になる。
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                          action: #selector(printStack))
+        drawView.addGestureRecognizer(tapGestureRecognizer)
+        
+        
         self.view.addSubview(drawView)
 
         
 
 
+        }
+    
+    @objc private func printStack() {
+            print("stack")
+            istap = 1
         }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -187,15 +202,27 @@ extension ViewController: NISessionDelegate {
             fatalError("init(coder:) has not been implemented")
         }
         
+        
         override func draw(_ rect: CGRect) {
             // ここにUIBezierPathを記述する
+            //隠す用のやつ
             let rectangle = UIBezierPath(rect: CGRect(x: 0, y: 0, width: 350, height: 750))
             // 内側の色
             UIColor(red: 1, green: 1, blue: 1, alpha: 1).setFill()
             // 内側を塗りつぶす
             rectangle.fill()
-            // 線を塗りつぶす
-//            rectangle.stroke()
+            
+
+            if istap == 1 {
+                let rectangle = UIBezierPath(rect: CGRect(x: 50, y: 200, width: 300, height: 400))
+                // 内側の色
+                UIColor(red: 1, green: 1, blue: 1, alpha: 1).setFill()
+                // 内側を塗りつぶす
+                rectangle.fill()
+                // 線を塗りつぶす
+                rectangle.stroke()
+                
+            }
             
             // 円
             let circle = UIBezierPath(arcCenter: CGPoint(x: 200 + offsetX*200, y: 400 - offsetY*200), radius: 100 - r_for_ui*100, startAngle: 0, endAngle: CGFloat(Double.pi)*2, clockwise: true)
@@ -210,8 +237,21 @@ extension ViewController: NISessionDelegate {
             // 線を塗りつぶす
             circle.stroke()
             
+            let circle_center = UIBezierPath(arcCenter: CGPoint(x: 200, y: 400), radius: 100, startAngle: 0, endAngle: CGFloat(Double.pi)*2, clockwise: true)
+            // 内側の色
+//            UIColor(red: 0, green: 0, blue: 1, alpha: 0.3).setFill()
+            // 内側を塗りつぶす
+//            circle_center.fill()
+            // 線の色
+            UIColor(red: 0, green: 0, blue: 1, alpha: 1.0).setStroke()
+            // 線の太さ
+            circle_center.lineWidth = 1.0
+            // 線を塗りつぶす
+            circle_center.stroke()
+            
             
         }
+
 
     }
 }
